@@ -4,7 +4,6 @@ use super::utils::fresh_basic_block;
 use super::utils::fresh_local;
 use super::utils::has_named_local;
 use super::utils::is_mut;
-use super::utils::local_node_to_current_place;
 
 use std::collections::HashSet;
 
@@ -33,7 +32,7 @@ use crate::rustc_interface::middle::ty::TyCtxt;
 use pcg::free_pcs::PcgLocation;
 
 use pcg::pcg::EvalStmtPhase;
-use pcg::pcg::PCGNode;
+use pcg::pcg::PcgNode;
 
 use pcg::utils::place::Place;
 use pcg::utils::CompilerCtxt;
@@ -71,7 +70,7 @@ fn places_blocking<'mir, 'tcx>(
         if is_blocking_edge(&kind_set) {
             let mut nodes: Vec<_> = curr
                 .blocked_by_nodes(ctx)
-                .flat_map(local_node_to_current_place)
+                .flat_map(|node| node.as_current_place())
                 .collect();
             places.extend(nodes.drain(..));
         }
@@ -256,10 +255,10 @@ impl Mutation for BorrowExpiryOrder {
                             let ctx = ctx;
                             let base = expansion.base();
                             match base {
-                                PCGNode::Place(p) => {
+                                PcgNode::Place(p) => {
                                     p.ty(ctx).ty.ref_mutability() == Some(Mutability::Mut)
                                 }
-                                PCGNode::RegionProjection(rp) => {
+                                PcgNode::LifetimeProjection(rp) => {
                                     rp.place().ty(ctx).ty.ref_mutability()
                                         == Some(Mutability::Mut)
                                 }
@@ -338,10 +337,10 @@ impl Mutation for AbstractExpiryOrder {
                             let ctx = ctx;
                             let base = expansion.base();
                             match base {
-                                PCGNode::Place(p) => {
+                                PcgNode::Place(p) => {
                                     p.ty(ctx).ty.ref_mutability() == Some(Mutability::Mut)
                                 }
-                                PCGNode::RegionProjection(rp) => {
+                                PcgNode::LifetimeProjection(rp) => {
                                     rp.place().ty(ctx).ty.ref_mutability()
                                         == Some(Mutability::Mut)
                                 }

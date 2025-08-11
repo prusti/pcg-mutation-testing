@@ -1,14 +1,10 @@
 use pcg::borrow_pcg::borrow_pcg_edge::BorrowPcgEdgeLike;
-use pcg::borrow_pcg::borrow_pcg_edge::LocalNode;
 use pcg::borrow_pcg::edge::borrow::BorrowEdge;
 use pcg::borrow_pcg::edge::kind::BorrowPcgEdgeKind;
 use pcg::borrow_pcg::graph::BorrowsGraph;
 
-use pcg::utils::maybe_remote::MaybeRemotePlace;
-use pcg::utils::maybe_old::MaybeOldPlace;
 use pcg::utils::place::Place;
 
-use pcg::pcg::PCGNode;
 
 use crate::rustc_interface::ast::ast::BindingMode;
 
@@ -20,37 +16,13 @@ use crate::rustc_interface::middle::mir::BasicBlockData;
 use crate::rustc_interface::middle::mir::BindingForm;
 use crate::rustc_interface::middle::mir::Body;
 use crate::rustc_interface::middle::mir::BorrowKind;
-use crate::rustc_interface::middle::mir::MutBorrowKind;
 use crate::rustc_interface::middle::mir::ClearCrossCrate;
 use crate::rustc_interface::middle::mir::Local;
 use crate::rustc_interface::middle::mir::LocalDecl;
 use crate::rustc_interface::middle::mir::LocalInfo;
+use crate::rustc_interface::middle::mir::MutBorrowKind;
 use crate::rustc_interface::middle::mir::SourceInfo;
 use crate::rustc_interface::middle::mir::VarBindingForm;
-
-pub(crate) fn local_node_to_current_place<'tcx>(pcg_node: LocalNode<'tcx>) -> Option<Place<'tcx>> {
-    match pcg_node {
-        PCGNode::Place(maybe_old_place) =>
-            maybe_old_place_to_current_place(maybe_old_place),
-        _ => None,
-    }
-}
-
-pub(crate) fn maybe_old_place_to_current_place<'tcx>(maybe_old_place: MaybeOldPlace<'tcx>) -> Option<Place<'tcx>>{
-    match maybe_old_place {
-        MaybeOldPlace::Current { place } => Some(place),
-        MaybeOldPlace::OldPlace(_) => None,
-    }
-}
-
-#[allow(dead_code)]
-pub(crate) fn maybe_remote_place_to_local_place<'tcx>(maybe_remote_place: MaybeRemotePlace<'tcx>) -> Option<MaybeOldPlace<'tcx>>{
-    match maybe_remote_place {
-        MaybeRemotePlace::Local(maybe_old_place) =>
-            Some(maybe_old_place),
-        MaybeRemotePlace::Remote(_) => None,
-    }
-}
 
 // Create a fresh local with a bogus source span
 pub(crate) fn fresh_local<'tcx>(body: &mut Body<'tcx>, ty: Ty<'tcx>) -> Local {
@@ -79,7 +51,9 @@ pub(crate) fn bogus_source_info<'tcx>(body: &Body<'tcx>) -> SourceInfo {
 
 pub(crate) fn is_mut(kind: BorrowKind) -> bool {
     match kind {
-        BorrowKind::Mut { kind: MutBorrowKind::Default } => true,
+        BorrowKind::Mut {
+            kind: MutBorrowKind::Default,
+        } => true,
         _ => false,
     }
 }
@@ -102,13 +76,10 @@ pub(crate) fn borrowed_places<'graph, 'tcx>(
             BorrowPcgEdgeKind::Borrow(borrow_edge) => match borrow_edge {
                 BorrowEdge::Local(local_borrow) => {
                     if borrow_edge.kind().iter().any(|kind| p(*kind)) {
-                        match local_borrow.blocked_place {
-                            MaybeOldPlace::Current { place } => {
-                                let region = local_borrow.region;
-                                Some((place, region))
-                            },
-                            _ => None,
-                        }
+                        local_borrow
+                            .blocked_place
+                            .as_current_place()
+                            .map(|place| (place, local_borrow.region))
                     } else {
                         None
                     }
@@ -119,14 +90,9 @@ pub(crate) fn borrowed_places<'graph, 'tcx>(
         })
 }
 
-pub(crate) fn has_named_local<'tcx>(
-    place: Place<'tcx>,
-    body: &Body<'tcx>,
-) -> bool {
+pub(crate) fn has_named_local<'tcx>(place: Place<'tcx>, body: &Body<'tcx>) -> bool {
     match body.local_decls.get(place.local) {
-        Some(local_decl) => {
-            local_decl.is_user_variable()
-        },
+        Some(local_decl) => local_decl.is_user_variable(),
         None => false,
     }
 }

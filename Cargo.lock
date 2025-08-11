@@ -96,6 +96,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f68f53c83ab957f72c32642f3868eec03eb974d1fb82e453128456482613d36"
 
 [[package]]
+name = "borrowck"
+version = "0.0.0"
+
+[[package]]
 name = "bumpalo"
 version = "3.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -812,6 +816,7 @@ dependencies = [
  "dot",
  "itertools",
  "lazy_static",
+ "openssl",
  "petgraph",
  "regex",
  "rustversion",
@@ -828,6 +833,7 @@ dependencies = [
 name = "pcg-mutation-testing"
 version = "0.1.0"
 dependencies = [
+ "borrowck",
  "bumpalo",
  "chrono",
  "derive_more",
@@ -836,7 +842,6 @@ dependencies = [
  "rand",
  "rayon",
  "reqwest",
- "rustc_borrowck",
  "rustversion",
  "serde",
  "serde_derive",
@@ -1041,14 +1046,6 @@ name = "rustc-demangle"
 version = "0.1.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "989e6739f80c4ad5b13e0fd7fe89531180375b18520cc8c82080e4dc4035b84f"
-
-[[package]]
-name = "rustc_borrowck"
-version = "0.0.0"
-dependencies = [
- "itertools",
- "tracing",
-]
 
 [[package]]
 name = "rustix"
