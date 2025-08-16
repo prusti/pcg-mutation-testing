@@ -19,7 +19,6 @@ use pcg_mutation_testing::mutator::write_to_shared::WriteToShared;
 
 use pcg_mutation_testing::utils::env_feature_enabled;
 
-use std::alloc::System;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -185,7 +184,7 @@ fn run_mutation_tests<'tcx>(
         passed_bodies: &'a mut HashMap<LocalDefId, BodyWithBorrowckFacts<'tcx>>,
         def_id: LocalDefId,
         body_with_borrowck_facts: &'a BodyWithBorrowckFacts<'tcx>,
-        mut analysis: PcgOutput<'mir, 'tcx, System>,
+        mut analysis: PcgOutput<'mir, 'tcx>,
     ) {
         for mutation in mutations.iter_mut() {
             let mutator_data = mutator_results
@@ -324,7 +323,7 @@ fn run_mutation_tests<'tcx>(
                     let ctx: CompilerCtxt<'_, '_> =
                         CompilerCtxt::new(&body.body, tcx, &borrow_checker_impl);
                     let pcg_ctx = PcgCtxt::new(&body.body, ctx.tcx(), ctx.bc());
-                    let analysis = run_pcg(&pcg_ctx, System, None);
+                    let analysis = run_pcg(&pcg_ctx, None);
 
                     run_mutation_tests_for_body(
                         tcx,
@@ -353,7 +352,7 @@ fn run_mutation_tests<'tcx>(
             let item_name = ctx.tcx().def_path_str(def_id.to_def_id()).to_string();
             let item_dir = format!("{vis_dir}/{item_name}");
             item_names.push(item_name);
-            run_pcg(&pcg_ctx, System, Some(item_dir.as_ref()));
+            run_pcg(&pcg_ctx, Some(item_dir.as_ref()));
         }
 
         let file_path = format!("{vis_dir}/functions.json");

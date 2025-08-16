@@ -18,7 +18,7 @@ use crate::rustc_interface::middle::ty::Region;
 use crate::rustc_interface::middle::ty::RegionKind;
 use crate::rustc_interface::middle::ty::Ty;
 
-use pcg::free_pcs::CapabilityKind;
+use pcg::pcg::CapabilityKind;
 use pcg::free_pcs::PcgLocation;
 use pcg::pcg::EvalStmtPhase;
 use pcg::utils::CompilerCtxt;
@@ -109,21 +109,13 @@ impl Mutation for ReadFromWriteOnly {
         // We consider only places that are W at the `PostMain` of `curr` and `PostOperands` of `next`
         // because a borrow could expire which restores E capability at the `PostOperands` phase.
         let write_only_in_curr: Vec<_> = curr.states[EvalStmtPhase::PostMain]
-            .capabilities()
-            .iter()
-            .filter_map(|(place, ck)| match ck {
-                CapabilityKind::Write => Some(place),
-                _ => None,
-            })
+            .places_with_capapability(CapabilityKind::Write)
+            .into_iter()
             .collect();
 
         let write_only_in_next: Vec<_> = next.states[EvalStmtPhase::PostOperands]
-            .capabilities()
-            .iter()
-            .filter_map(|(place, ck)| match ck {
-                CapabilityKind::Write => Some(place),
-                _ => None,
-            })
+            .places_with_capapability(CapabilityKind::Write)
+            .into_iter()
             .collect();
 
         let write_only = write_only_in_curr

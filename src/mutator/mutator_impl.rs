@@ -7,7 +7,6 @@ use pcg::free_pcs::PcgLocation;
 use pcg::utils::CompilerCtxt;
 use pcg::PcgOutput;
 
-use std::alloc::System;
 use std::collections::VecDeque;
 
 #[derive(Serialize, Clone, Debug)]
@@ -69,7 +68,7 @@ pub trait Mutation {
 // the entire `Body`.
 pub struct Mutator<'a, 'mir: 'a, 'tcx: 'mir> {
     mutation: &'a Box<dyn Mutation>,
-    analysis: &'a mut PcgOutput<'mir, 'tcx, System>,
+    analysis: &'a mut PcgOutput<'mir, 'tcx>,
     ctx: CompilerCtxt<'a, 'tcx>,
     body: &'a Body<'tcx>,
     mutants: Option<MutantStream<'a, 'mir, 'tcx>>,
@@ -83,7 +82,7 @@ impl<'a, 'mir: 'a, 'tcx: 'mir> Mutator<'a, 'mir, 'tcx> {
     pub fn new(
         mutation: &'a Box<dyn Mutation>,
         ctx: CompilerCtxt<'a, 'tcx>,
-        analysis: &'a mut PcgOutput<'mir, 'tcx, System>,
+        analysis: &'a mut PcgOutput<'mir, 'tcx>,
         body: &'a Body<'tcx>,
     ) -> Self {
         Self {
