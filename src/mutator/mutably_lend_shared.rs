@@ -23,7 +23,7 @@ use crate::rustc_interface::middle::mir::StatementKind;
 use crate::rustc_interface::middle::ty::Region;
 use crate::rustc_interface::middle::ty::Ty;
 
-use pcg::free_pcs::PcgLocation;
+use pcg::results::PcgLocation;
 use pcg::pcg::EvalStmtPhase;
 use pcg::utils::CompilerCtxt;
 use pcg::utils::Place;

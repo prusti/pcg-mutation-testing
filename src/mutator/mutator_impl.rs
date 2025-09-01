@@ -3,7 +3,7 @@ use serde::Serialize;
 use crate::rustc_interface::middle::mir::BasicBlock;
 use crate::rustc_interface::middle::mir::Body;
 
-use pcg::free_pcs::PcgLocation;
+use pcg::results::PcgLocation;
 use pcg::utils::CompilerCtxt;
 use pcg::PcgOutput;
 

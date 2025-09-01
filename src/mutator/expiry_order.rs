@@ -29,7 +29,7 @@ use crate::rustc_interface::middle::ty::RegionVid;
 use crate::rustc_interface::middle::ty::Ty;
 use crate::rustc_interface::middle::ty::TyCtxt;
 
-use pcg::free_pcs::PcgLocation;
+use pcg::results::PcgLocation;
 
 use pcg::pcg::EvalStmtPhase;
 use pcg::pcg::PcgNode;

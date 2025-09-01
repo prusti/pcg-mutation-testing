@@ -18,7 +18,7 @@ use crate::rustc_interface::middle::mir::Rvalue;
 use crate::rustc_interface::middle::mir::Statement;
 use crate::rustc_interface::middle::mir::StatementKind;
 
-use pcg::free_pcs::PcgLocation;
+use pcg::results::PcgLocation;
 use pcg::pcg::EvalStmtPhase;
 use pcg::utils::CompilerCtxt;
 use pcg::utils::Place;
