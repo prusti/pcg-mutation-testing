@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-pcg = { path = "../pcg" }
+pcg = { path = "../pcg", default-features = false }
 borrowck = { path = "borrowck" }
 bumpalo = { version = "3.12.0", features = ["collections"] }
 serde = { version = "1.0.133", features = ["derive"] }
