@@ -31,7 +31,7 @@ struct Iter<'a, 'tcx: 'a> {
     write_only: Vec<Place<'tcx>>,
     ctx: CompilerCtxt<'a, 'tcx>,
     body: &'a Body<'tcx>,
-    curr: PcgLocation<'tcx>,
+    curr: PcgLocation<'a, 'tcx>,
 }
 
 impl<'a, 'mir: 'a, 'tcx: 'mir> Iter<'a, 'tcx> {
@@ -103,8 +103,8 @@ impl Mutation for ReadFromWriteOnly {
         &self,
         ctx: CompilerCtxt<'a, 'tcx>,
         body: &'a Body<'tcx>,
-        curr: PcgLocation<'tcx>,
-        next: PcgLocation<'tcx>,
+        curr: PcgLocation<'a, 'tcx>,
+        next: PcgLocation<'a, 'tcx>,
     ) -> MutantStream<'a, 'mir, 'tcx> {
         // We consider only places that are W at the `PostMain` of `curr` and `PostOperands` of `next`
         // because a borrow could expire which restores E capability at the `PostOperands` phase.

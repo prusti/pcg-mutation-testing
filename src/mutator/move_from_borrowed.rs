@@ -32,7 +32,7 @@ struct Iter<'a, 'tcx: 'a> {
     borrowed: Vec<Place<'tcx>>,
     ctx: CompilerCtxt<'a, 'tcx>,
     body: &'a Body<'tcx>,
-    curr: PcgLocation<'tcx>,
+    curr: PcgLocation<'a, 'tcx>,
 }
 
 impl<'a, 'mir: 'a, 'tcx: 'mir> MutantIterator<'a, 'mir, 'tcx> for Iter<'a, 'tcx> {
@@ -94,8 +94,8 @@ impl Mutation for MoveFromBorrowed {
         &self,
         ctx: CompilerCtxt<'a, 'tcx>,
         body: &'a Body<'tcx>,
-        curr: PcgLocation<'tcx>,
-        next: PcgLocation<'tcx>,
+        curr: PcgLocation<'a, 'tcx>,
+        next: PcgLocation<'a, 'tcx>,
     ) -> MutantStream<'a, 'mir, 'tcx> {
         let lent_in_curr = {
             let borrows_graph = curr.states[EvalStmtPhase::PostMain].borrow_pcg().graph();

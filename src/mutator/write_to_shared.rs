@@ -30,7 +30,7 @@ struct Iter<'a, 'tcx: 'a> {
     shared: Vec<Place<'tcx>>,
     ctx: CompilerCtxt<'a, 'tcx>,
     body: &'a Body<'tcx>,
-    curr: PcgLocation<'tcx>,
+    curr: PcgLocation<'a, 'tcx>,
 }
 
 impl<'a, 'mir: 'a, 'tcx: 'mir> Iter<'a, 'tcx> {
@@ -93,8 +93,8 @@ impl Mutation for WriteToShared {
         &self,
         ctx: CompilerCtxt<'a, 'tcx>,
         body: &'a Body<'tcx>,
-        curr: PcgLocation<'tcx>,
-        next: PcgLocation<'tcx>,
+        curr: PcgLocation<'a, 'tcx>,
+        next: PcgLocation<'a, 'tcx>,
     ) -> MutantStream<'a, 'mir, 'tcx> {
         let shared_in_curr = {
             let borrows_graph = curr.states[EvalStmtPhase::PostMain].borrow_pcg().graph();

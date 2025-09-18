@@ -57,8 +57,8 @@ pub trait Mutation {
         &self,
         ctx: CompilerCtxt<'a, 'tcx>,
         body: &'a Body<'tcx>,
-        curr: PcgLocation<'tcx>,
-        next: PcgLocation<'tcx>,
+        curr: PcgLocation<'a, 'tcx>,
+        next: PcgLocation<'a, 'tcx>,
     ) -> MutantStream<'a, 'mir, 'tcx>;
     fn name(&self) -> String;
 }
@@ -73,7 +73,7 @@ pub struct Mutator<'a, 'mir: 'a, 'tcx: 'mir> {
     body: &'a Body<'tcx>,
     mutants: Option<MutantStream<'a, 'mir, 'tcx>>,
     basic_blocks: VecDeque<BasicBlock>,
-    bb_stmts: Option<Vec<PcgLocation<'tcx>>>,
+    bb_stmts: Option<Vec<PcgLocation<'a, 'tcx>>>,
     stmt_idx: usize,
     // borrowck: NllBorrowCheckerImpl<'tcx, 'tcx>,
 }

@@ -114,8 +114,8 @@ struct Iter<'a, 'tcx: 'a> {
     mutant_sequences: Vec<(Place<'tcx>, Place<'tcx>)>,
     ctx: CompilerCtxt<'a, 'tcx>,
     body: &'a Body<'tcx>,
-    curr: PcgLocation<'tcx>,
-    next: PcgLocation<'tcx>,
+    curr: PcgLocation<'a, 'tcx>,
+    next: PcgLocation<'a, 'tcx>,
 }
 
 impl<'a, 'mir: 'a, 'tcx: 'mir> MutantIterator<'a, 'mir, 'tcx> for Iter<'a, 'tcx> {
@@ -218,8 +218,8 @@ impl Mutation for BorrowExpiryOrder {
         &self,
         ctx: CompilerCtxt<'a, 'tcx>,
         body: &'a Body<'tcx>,
-        curr: PcgLocation<'tcx>,
-        next: PcgLocation<'tcx>,
+        curr: PcgLocation<'a, 'tcx>,
+        next: PcgLocation<'a, 'tcx>,
     ) -> MutantStream<'a, 'mir, 'tcx> {
         let mut mutant_sequences = vec![];
 
@@ -297,8 +297,8 @@ impl Mutation for AbstractExpiryOrder {
         &self,
         ctx: CompilerCtxt<'a, 'tcx>,
         body: &'a Body<'tcx>,
-        curr: PcgLocation<'tcx>,
-        next: PcgLocation<'tcx>,
+        curr: PcgLocation<'a, 'tcx>,
+        next: PcgLocation<'a, 'tcx>,
     ) -> MutantStream<'a, 'mir, 'tcx> {
         let mut mutant_sequences = vec![];
 
