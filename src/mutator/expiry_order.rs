@@ -43,6 +43,7 @@ use pcg::borrow_pcg::borrow_pcg_edge::BorrowPcgEdgeRef;
 use pcg::borrow_pcg::edge::kind::BorrowPcgEdgeKind;
 use pcg::borrow_pcg::edge_data::EdgeData;
 use pcg::borrow_pcg::graph::BorrowsGraph;
+use pcg::utils::HasPlace;
 
 // Returns the places for each node that blocks `place` on a path that
 // includes at least one edge satisfying `is_blocking_edge` and consisting

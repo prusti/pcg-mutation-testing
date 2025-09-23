@@ -323,7 +323,7 @@ fn run_mutation_tests<'tcx>(
                     let ctx: CompilerCtxt<'_, '_> =
                         CompilerCtxt::new(&body.body, tcx, &borrow_checker_impl);
                     let pcg_ctx = PcgCtxt::new(&body.body, ctx.tcx(), ctx.bc());
-                    let analysis = run_pcg(&pcg_ctx, None);
+                    let analysis = run_pcg(&pcg_ctx);
 
                     run_mutation_tests_for_body(
                         tcx,
@@ -352,7 +352,7 @@ fn run_mutation_tests<'tcx>(
             let item_name = ctx.tcx().def_path_str(def_id.to_def_id()).to_string();
             let item_dir = format!("{vis_dir}/{item_name}");
             item_names.push(item_name);
-            run_pcg(&pcg_ctx, Some(item_dir.as_ref()));
+            run_pcg(&pcg_ctx);
         }
 
         let file_path = format!("{vis_dir}/functions.json");
