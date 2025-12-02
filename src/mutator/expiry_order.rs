@@ -243,14 +243,14 @@ impl Mutation for BorrowExpiryOrder {
                     |kind_set| {
                         kind_set.iter().any(|kind| match kind {
                             BorrowPcgEdgeKind::Borrow(borrow_edge) => {
-                                borrow_edge.kind().iter().any(|kind| is_mut(*kind))
+                                borrow_edge.is_mut()
                             }
                             _ => false,
                         })
                     },
                     |kind| match kind {
                         BorrowPcgEdgeKind::Borrow(borrow_edge) => {
-                            borrow_edge.kind().iter().any(|kind| is_mut(*kind))
+                            borrow_edge.is_mut()
                         }
                         BorrowPcgEdgeKind::BorrowPcgExpansion(expansion) => {
                             let ctx = ctx;
@@ -325,14 +325,14 @@ impl Mutation for AbstractExpiryOrder {
                             _ => false,
                         }) && kind_set.iter().any(|kind| match kind {
                             BorrowPcgEdgeKind::Borrow(borrow_edge) => {
-                                borrow_edge.kind().iter().any(|kind| is_mut(*kind))
+                                borrow_edge.is_mut()
                             }
                             _ => false,
                         })
                     },
                     |kind| match kind {
                         BorrowPcgEdgeKind::Borrow(borrow_edge) => {
-                            borrow_edge.kind().iter().any(|kind| is_mut(*kind))
+                            borrow_edge.is_mut()
                         }
                         BorrowPcgEdgeKind::BorrowPcgExpansion(expansion) => {
                             let ctx = ctx;

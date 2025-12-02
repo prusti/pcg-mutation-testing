@@ -5,7 +5,6 @@ use pcg::borrow_pcg::graph::BorrowsGraph;
 
 use pcg::utils::place::Place;
 
-
 use crate::rustc_interface::ast::ast::BindingMode;
 
 use crate::rustc_interface::middle::ty::Region;
@@ -73,19 +72,16 @@ pub(crate) fn borrowed_places<'graph, 'tcx>(
     graph
         .edges()
         .flat_map(move |edge_ref| match edge_ref.kind() {
-            BorrowPcgEdgeKind::Borrow(borrow_edge) => match borrow_edge {
-                BorrowEdge::Local(local_borrow) => {
-                    if borrow_edge.kind().iter().any(|kind| p(*kind)) {
-                        local_borrow
-                            .blocked_place
-                            .as_current_place()
-                            .map(|place| (place, local_borrow.region))
-                    } else {
-                        None
-                    }
+            BorrowPcgEdgeKind::Borrow(borrow_edge) => {
+                if p(borrow_edge.kind()) {
+                    borrow_edge
+                        .blocked_place()
+                        .as_current_place()
+                        .map(|place| (place, borrow_edge.region()))
+                } else {
+                    None
                 }
-                _ => None,
-            },
+            }
             _ => None,
         })
 }
